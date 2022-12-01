@@ -5,7 +5,7 @@ const data = fs.readFileSync(args[0], 'utf8')
 const lines = data.split('\n')
 
 let elves = []
-let elve = 1
+let elve = 0
 let max = 0
 let maxElve = 0
 lines.forEach(x => {
@@ -21,6 +21,9 @@ lines.forEach(x => {
     if (x.length === 0) elve++
 })
 
-console.log(`Del 1: Most carrying is ${maxElve} with ${max}`)
+console.log(`Del 1: Most carrying is ${maxElve + 1} with ${max}`)
 
-console.log(elves)
+const sorted = elves.sort((a,b) => b-a)
+const top3 = sorted[0] + sorted[1] + sorted[2]
+
+console.log(`Del 2: Topp tre = ${top3}`)
