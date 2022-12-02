@@ -10,9 +10,8 @@ let max = 0
 let maxElve = 0
 lines.forEach(x => {
     if(x.length != 0) {
-    const cal = parseInt(x)
-    elves[elve] = elves[elve] == undefined ? cal : elves[elve] + cal
-    console.log(elves[elve])
+        const cal = parseInt(x)
+        elves[elve] = elves[elve] == undefined ? cal : elves[elve] + cal
     }
     if (elves[elve] > max) {
         max = elves[elve]
@@ -21,8 +20,10 @@ lines.forEach(x => {
     if (x.length === 0) elve++
 })
 
+// Del 1
 console.log(`Del 1: Most carrying is ${maxElve + 1} with ${max}`)
 
+// Del 2
 const sorted = elves.sort((a,b) => b-a)
 const top3 = sorted[0] + sorted[1] + sorted[2]
 
