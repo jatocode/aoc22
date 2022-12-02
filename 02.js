@@ -65,9 +65,7 @@ function scoretablePart2() {
 
 function points(sc1, sc2) {
     if (sc1 === sc2) return 3
-    if (sc2 === 3) return sc1 === 2 ? 6 : 0
-    if (sc2 === 2) return sc1 === 1 ? 6 : 0
-    if (sc2 === 1) return sc1 === 3 ? 6 : 0
+    return sc2 === ((sc1 % 3) + 1) ? 6 : 0
 }
 
 function game(st) {
