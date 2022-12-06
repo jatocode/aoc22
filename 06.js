@@ -31,4 +31,4 @@ assert(findMarker(test5) === 11)
 
 console.log('Dag 6, del 1:', findMarker(data))
 
-
+console.log('Dag 6, del 2:', findMarker(data, 14))
