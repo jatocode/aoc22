@@ -13,6 +13,16 @@ const totalUnder100000 = usage.dirs
 
 console.log('Dag 7, del 1: ', totalUnder100000)
 
+const total = 70000000
+const needed = 30000000
+const spaceLeft = total - usage.size
+const candidates = usage.dirs
+    .filter(x => x.size + spaceLeft >= needed)
+    .sort((a, b) => a.size - b.size)
+
+console.log('Dag 7, del 2: ', candidates[0].size)
+
+
 function du(node, dirs = [], path = '') {
     if (node.type === 'd') {
         for (let i = 0; i < node.nodes.length; i++) {
