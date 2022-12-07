@@ -22,14 +22,12 @@ const candidates = usage.dirs
 
 console.log('Dag 7, del 2: ', candidates[0].size)
 
-
 function du(node, dirs = [], path = '') {
     if (node.type === 'd') {
         for (let i = 0; i < node.nodes.length; i++) {
             node.size += du(node.nodes[i], dirs, path + '/' + node.nodes[i].name).size
         }
         dirs.push({ name: node.name, size: node.size })
-        //console.log('du', node.name, node.size)
     } else {
         //console.log(path + ' ' + node.size)
     }
@@ -58,25 +56,19 @@ function buildFileSystem() {
                     } else {
                         cwd = cwd.nodes.find(x => x.name === arg)
                     }
-                    //console.log('cd to ', cwd.name)
                 }
             }
         } else {
             let m = line.match(/(dir|[0-9]+) (.*)/)
             if (m) {
                 let type = m[1]
-                let node = { name: m[2] }
-                if (type === 'dir') {
-                    node.type = 'd'
-                    node.size = 0
-                    node.parent = cwd
-                    node.nodes = []
-                } else {
-                    node.type = 'f'
-                    node.size = parseInt(m[1])
-                    node.parent = cwd
+                const node = { 
+                    name: m[2],
+                    type: type === 'dir' ? 'd' : 'f',
+                    size: type === 'dir' ? 0 : parseInt(m[1]),
+                    parent: cwd, 
+                    nodes: [] 
                 }
-                //console.log(cwd.name,'-',node.name)
                 cwd.nodes.push(node)
             }
         }
