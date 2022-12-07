@@ -10,19 +10,13 @@ const test3 = 'nppdvjthqldpwncqszvftbrmjlhg'
 const test4 = 'nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg'
 const test5 = 'zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw'
 
-function findMarker(line, length=4) {
-    let signal = []
-    let i = 0
+function findMarker(line, length = 4) {
     const data = line.split('')
-    while(i < data.length) {
-        signal[(i++) % length] = data[i]
-        if(signal.length > length-1) {
-            const set = new Set(signal)
-            if(set.size === length) return i+1
-        }
+    for(let i=0;i < data.length;i++) {
+        const set = new Set(data.slice(i, i + length))
+        if (set.size === length) return i + length
     }
 }
-
 assert(findMarker(test1) === 7)
 assert(findMarker(test2) === 5)
 assert(findMarker(test3) === 6)
