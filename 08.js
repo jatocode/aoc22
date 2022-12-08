@@ -16,9 +16,8 @@ function checkVisibility(map) {
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const tree = map[`${x},${y}`]
-            if (nbLeft(x, y, map).every(x => x.h < tree.h) || nbRight(x, y, map).every(x => x.h < tree.h) ||
-                nbUp(x, y, map).every(x => x.h < tree.h) || nbDown(x, y, map).every(x => x.h < tree.h)) {
-                tree.v = true
+            if (nbLeft(x, y, map).every(x => x < tree) || nbRight(x, y, map).every(x => x < tree) ||
+                nbUp(x, y, map).every(x => x < tree) || nbDown(x, y, map).every(x => x < tree)) {
                 visibles++
                 continue
             }
@@ -60,13 +59,12 @@ function nbDown(x, y, map) {
     return nb
 }
 
-
 function buildMap() {
     let map = {}
     for (let y = 0; y < trees.length; y++) {
         const treeline = trees[y].split('')
         for (let x = 0; x < treeline.length; x++) {
-            map[`${x},${y}`] = { h: parseInt(treeline[x]), v: undefined }
+            map[`${x},${y}`] = parseInt(treeline[x])
         }
     }
     return map
