@@ -22,6 +22,7 @@ function checkVisibility(map) {
             const nbr = nbRight(x, y, map)
             const nbu = nbUp(x, y, map)
             const nbd = nbDown(x, y, map)
+            
             if (nbl.every(x => x < tree) || nbr.every(x => x < tree) ||
                 nbu.every(x => x < tree) || nbd.every(x => x < tree)) {
                 visibles++
@@ -43,12 +44,9 @@ function checkVisibility(map) {
 }
 
 function lineOfSight(tree, line) {
-    let c=0
-    for (let i=0; i < line.length; i++) {
-        c++
-        if(line[i] >= tree) break
-    }
-    return c
+    const i = line.findIndex(x => x >= tree)
+    const length = i == -1 ? line.length : i + 1
+    return length
 }
 
 
