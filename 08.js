@@ -7,28 +7,54 @@ const width = trees[0].length
 const height = trees.length
 
 let topo = buildMap()
-const v = checkVisibility(topo)
+const r = checkVisibility(topo)
 
-console.log('Dag 8, del 1: Synliga träd: ', v)
+console.log('Dag 8, del 1: Synliga träd: ', r.visible)
+console.log('Dag 8, del 2: Bästa scenic score: ', r.topscore)
 
 function checkVisibility(map) {
     let visibles = 0
+    let topscore = 0
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const tree = map[`${x},${y}`]
-            if (nbLeft(x, y, map).every(x => x < tree) || nbRight(x, y, map).every(x => x < tree) ||
-                nbUp(x, y, map).every(x => x < tree) || nbDown(x, y, map).every(x => x < tree)) {
+            const nbl = nbLeft(x, y, map)
+            const nbr = nbRight(x, y, map)
+            const nbu = nbUp(x, y, map)
+            const nbd = nbDown(x, y, map)
+            if (nbl.every(x => x < tree) || nbr.every(x => x < tree) ||
+                nbu.every(x => x < tree) || nbd.every(x => x < tree)) {
                 visibles++
+
+                // Del 2 scenic score
+                const losR = lineOfSight(tree, nbr)
+                const losL = lineOfSight(tree, nbl)
+                const losU = lineOfSight(tree, nbu)
+                const losD = lineOfSight(tree, nbd)
+
+                const score = losR * losL * losU * losD
+
+                if(score > topscore) topscore = score
                 continue
             }
         }
     }
-    return visibles
+    return {visible:visibles, topscore: topscore}
 }
+
+function lineOfSight(tree, line) {
+    let c=0
+    for (let i=0; i < line.length; i++) {
+        c++
+        if(line[i] >= tree) break
+    }
+    return c
+}
+
 
 function nbLeft(x, y, map) {
     let nb = []
-    for (let i = 0; i < x; i++) {
+    for (let i = x - 1; i >= 0; i--) {
         const tree = map[`${i},${y}`]
         nb.push(tree)
     }
@@ -44,7 +70,7 @@ function nbRight(x, y, map) {
 }
 function nbUp(x, y, map) {
     let nb = []
-    for (let i = 0; i < y; i++) {
+    for (let i = y - 1; i >= 0; i--) {
         const tree = map[`${x},${i}`]
         nb.push(tree)
     }
