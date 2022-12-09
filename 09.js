@@ -39,7 +39,7 @@ function whipTheTail(tails) {
 
             tails.forEach((t, i) => {
                 const front = i == 0 ? H : tails[i - 1]
-                moveTail(front, t, (i + 1))
+                moveTail(front, t, i)
             })
         }
     })
@@ -48,7 +48,7 @@ function whipTheTail(tails) {
 function moveTail(H, T, i = 0) {
     const HTdiffX = H.x - T.x
     const HTdiffY = H.y - T.y
-    
+
     if (Math.abs(HTdiffX) > 1) {
         T.x += HTdiffX > 0 ? 1 : -1
         if (T.y != H.y) T.y += HTdiffY > 0 ? 1 : -1
