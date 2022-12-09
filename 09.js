@@ -22,11 +22,10 @@ console.log('Dag 9 del 1, antal rutor: ', tails1[0].count)
 
 H = { x: 0, y: 0 }
 whipTheTail(tails9)
-console.log('Dag 9 del 2, antal rutor för tail 9: ', tails9[8].count)
+console.log('Dag 9 del 2, antal rutor för tail 9: ', tails9.at(-1).count)
 
 function whipTheTail(tails) {
-    for (let l = 0; l < lines.length; l++) {
-        const line = lines[l]
+   lines.forEach(line => {
         const m = line.match(/([RLUD]) (\d+)/)
         const dir = m[1]
         const dist = parseInt(m[2])
@@ -43,22 +42,19 @@ function whipTheTail(tails) {
                 moveTail(front, t, (i + 1))
             })
         }
-    }
+    })
 }
 
 function moveTail(H, T, i = 0) {
     const HTdiffX = H.x - T.x
     const HTdiffY = H.y - T.y
+    
     if (Math.abs(HTdiffX) > 1) {
         T.x += HTdiffX > 0 ? 1 : -1
-        if (T.y != H.y) {
-            T.y += HTdiffY > 0 ? 1 : -1
-        }
+        if (T.y != H.y) T.y += HTdiffY > 0 ? 1 : -1
     } else if (Math.abs(HTdiffY) > 1) {
         T.y += HTdiffY > 0 ? 1 : -1
-        if (T.x != H.x) {
-            T.x += HTdiffX > 0 ? 1 : -1
-        }
+        if (T.x != H.x) T.x += HTdiffX > 0 ? 1 : -1
     }
 
     if (T.visit[`${T.x},${T.y}`] != i.toString()) T.count = T.count ? T.count + 1 : 1
