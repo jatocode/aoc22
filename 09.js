@@ -4,61 +4,63 @@ const args = process.argv.slice(2)
 const lines = osfs.readFileSync(args[0], 'utf8').split('\n')
 
 let H = { x: 0, y: 0 }
-let T = { x: 0, y: 0 }
-let maxX = 0
-let maxY = 0
-let minY = 100000
-let minX = 100000
-let grid = {}
-let test = 0
-for(let l = 0; l < lines.length; l++) {
-    const line = lines[l]
-    const m = line.match(/([RLUD]) (\d+)/)
-    const dir = m[1]
-    const dist = parseInt(m[2])
-    for (let i = 0; i < dist; i++) {
-        switch (dir) {
-            case 'R': H.x += 1; break;
-            case 'L': H.x -= 1; break;
-            case 'U': H.y += 1; break;
-            case 'D': H.y -= 1; break;
-        }
-        if (H.x > maxX) maxX = H.x
-        if (H.y > maxY) maxY = H.y
+let tails1 = [{ x: 0, y: 0, visit: {} }]
+let tails9 = [
+    { x: 0, y: 0, visit: {} },
+    { x: 0, y: 0, visit: {} },
+    { x: 0, y: 0, visit: {} },
+    { x: 0, y: 0, visit: {} },
+    { x: 0, y: 0, visit: {} },
+    { x: 0, y: 0, visit: {} },
+    { x: 0, y: 0, visit: {} },
+    { x: 0, y: 0, visit: {} },
+    { x: 0, y: 0, visit: {} }
+]
 
-        if (H.x < minX) minX = H.x
-        if (H.y < minY) minY = H.y
+whipTheTail(tails1)
+console.log('Dag 9 del 1, antal rutor: ', tails1[0].count)
 
-        const HTdiffX = H.x - T.x
-        const HTdiffY = H.y - T.y
+H = { x: 0, y: 0 }
+whipTheTail(tails9)
+console.log('Dag 9 del 2, antal rutor för tail 9: ', tails9[8].count)
 
-        if(Math.abs(HTdiffX) > 1) {
-            T.x += HTdiffX > 0 ? 1 : -1
-            if(T.y != H.y) {
-                T.y += HTdiffY > 0 ? 1 : -1
+function whipTheTail(tails) {
+    for (let l = 0; l < lines.length; l++) {
+        const line = lines[l]
+        const m = line.match(/([RLUD]) (\d+)/)
+        const dir = m[1]
+        const dist = parseInt(m[2])
+        for (let i = 0; i < dist; i++) {
+            switch (dir) {
+                case 'R': H.x += 1; break
+                case 'L': H.x -= 1; break
+                case 'U': H.y += 1; break
+                case 'D': H.y -= 1; break
             }
-        } else if(Math.abs(HTdiffY) > 1) {
-            T.y += HTdiffY > 0 ? 1 : -1
-            if(T.x != H.x) {
-                T.x += HTdiffX > 0 ? 1 : -1
-            }
+
+            tails.forEach((t, i) => {
+                const front = i == 0 ? H : tails[i - 1]
+                moveTail(front, t, (i + 1))
+            })
         }
-        grid[`${T.x},${T.y}`] = '#'
     }
 }
 
-const count = printGrid()
-console.log('Dag 9 del 1, antal rutor: ', count)
-
-function printGrid() {
-    let count = 0
-    for (let y = maxY; y >= minY; y--) {
-        let row = ''
-        for (let x = minX; x <= maxX; x++) {
-            row += grid[`${x},${y}`] || '.'
-            if(grid[`${x},${y}`]) count++
+function moveTail(H, T, i = 0) {
+    const HTdiffX = H.x - T.x
+    const HTdiffY = H.y - T.y
+    if (Math.abs(HTdiffX) > 1) {
+        T.x += HTdiffX > 0 ? 1 : -1
+        if (T.y != H.y) {
+            T.y += HTdiffY > 0 ? 1 : -1
         }
-      //  console.log(row)
+    } else if (Math.abs(HTdiffY) > 1) {
+        T.y += HTdiffY > 0 ? 1 : -1
+        if (T.x != H.x) {
+            T.x += HTdiffX > 0 ? 1 : -1
+        }
     }
-    return count
+
+    if (T.visit[`${T.x},${T.y}`] != i.toString()) T.count = T.count ? T.count + 1 : 1
+    T.visit[`${T.x},${T.y}`] = i.toString()
 }
