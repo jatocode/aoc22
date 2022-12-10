@@ -8,7 +8,6 @@ let cycle = 0
 let crtpos = 0
 let sum = 0 
 let crt = Array(240).fill('.')
-let checkCycles = [20,60,100,140,180,220]
 
 cpu()
 console.log('Del 1:', sum)
@@ -18,8 +17,7 @@ print()
 function cpu() {
     lines.forEach(line => {
         const m = line.match(/([a-z]+)( -?\d+)?/)
-        if (!m)
-            console.log('No match', line)
+
         const inst = m[1]
         const val = parseInt(m[2])
         switch (inst) {
@@ -45,8 +43,9 @@ function crttick() {
     crtpos = (crtpos + 1) % 240
 }
 function tick() {
+    const checkCycles = [20,60,100,140,180,220]
+
     cycle += 1    
-   // if(cycle % 20 == 0) console.log({cycle,x, signal:x * cycle})
     if(checkCycles.includes(cycle)) sum += x * cycle
     crttick()
 }
