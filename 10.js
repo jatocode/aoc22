@@ -16,10 +16,9 @@ print()
 
 function cpu() {
     lines.forEach(line => {
-        const m = line.match(/([a-z]+)( -?\d+)?/)
-
-        const inst = m[1]
-        const val = parseInt(m[2])
+        const m = line.split(' ')
+        const inst = m[0]
+        const val = parseInt(m[1])
         switch (inst) {
             case 'noop':
                 tick()
