@@ -37,8 +37,8 @@ function cpu() {
 function crttick() {
     const sprite = x
     const linepos = crtpos % 40
-    if(sprite-1 <= linepos && linepos <= sprite+1) crt[crtpos] = '#'  
-    else crt[crtpos] = '.'
+    if(sprite-1 <= linepos && linepos <= sprite+1) crt[crtpos] = '⭐️'
+    else crt[crtpos] = '  '
 
     crtpos = (crtpos + 1) % 240
 }
