@@ -23,8 +23,10 @@ function monkeyplay(rounds, monkeynotes, factor) {
             for (let i = 0; i < itemlen; i++) {
                 const worry = monkey.items.shift()
                 let newworry = calcworry(worry, monkey.op)
+                
                 if(factor) newworry = newworry % factor
                 else newworry = Math.floor(newworry / 3)
+
                 if (newworry % monkey.test == 0) {
                     monkeys[monkey.iftrue].items.push(newworry)
             //        console.log(monkey.monkey, '->', monkey.iftrue, newworry)
