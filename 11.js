@@ -3,26 +3,43 @@ const args = process.argv.slice(2)
 
 const lines = osfs.readFileSync(args[0], 'utf8').split('\n')
 
-const monkeys = monkeynotes()
-monkeyplay(20, monkeys)
-const sorted = monkeys.sort((a, b) => b.count - a.count)
+const monkeys1 = monkeynotes()
+monkeyplay(20, monkeys1)
+const sorted = monkeys1.sort((a, b) => b.count - a.count)
 console.log('Dag 11 del 1:', sorted[0].count * sorted[1].count)
 
-function monkeyplay(rounds, monkeys) {
-    for (let round = 0; round < rounds; round++) {
+const monkeys2 = monkeynotes()
+
+// Fortfarande inte helt säker på varför det här funkar men kändes rätt
+const factors = monkeys2.map(m => m.test)
+const factor = factors.reduce((a, b) => a * b)
+monkeyplay(10000, monkeys2, factor)
+const sorted2 = monkeys2.sort((a, b) => b.count - a.count)
+console.log('Dag 11 del 2:', sorted2[0].count * sorted2[1].count)
+
+function monkeyplay(rounds, monkeys, factor) {
+    for (let round = 1; round <= rounds; round++) {
         monkeys.forEach(monkey => {
             const itemlen = monkey.items.length
             for (let i = 0; i < itemlen; i++) {
                 const worry = monkey.items.shift()
-                const newworry = Math.floor(calcworry(worry, monkey.op) / 3)
+                let newworry = calcworry(worry, monkey.op)
+                if(factor) newworry = newworry % factor
+                else newworry = Math.floor(newworry / 3)
                 if (newworry % monkey.test == 0) {
                     monkeys[monkey.iftrue].items.push(newworry)
+            //        console.log(monkey.monkey, '->', monkey.iftrue, newworry)
                 } else {
                     monkeys[monkey.iffalse].items.push(newworry)
+            //        console.log(monkey.monkey, '->', monkey.iffalse, newworry)
                 }
                 monkey.count++
             }
         })
+        // if(round % 1000 == 0) {
+        //     console.log('Round', round)
+        //     monkeys.forEach(m => console.log(`Monkey ${m.monkey} inspected items ${m.count} times`))
+        // }
     }
 }
 
@@ -34,7 +51,6 @@ function calcworry(old, op) {
         return old * rvalue
     }
 }
-
 
 function monkeynotes() {
     const monkeys = []
