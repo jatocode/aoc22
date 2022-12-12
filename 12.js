@@ -3,29 +3,22 @@ const args = process.argv.slice(2)
 
 const lines = osfs.readFileSync(args[0], 'utf8').split('\n')
 
-const grid = {}
-
-const [S, E] = createGrid()
-console.log('Start:', S, 'End:', E)
-let path = findPath(S, E)
+const [S, E, grid, alist] = createGrid()
+const path = findPath(S, E, grid)
 console.log('Dag 12 del 1:', path.length)
-// console.log(path.reduce((acc, p) => {
-//     const c = grid[`${p.x},${p.y}`]
-//     return acc + c + ' '
-// }, ''))
 
+const apaths = alist.map(a => findPath(a, E, grid).length).filter(p => p > 0).sort((a, b) => a - b)
+console.log('Dag 12 del 2:', apaths[0])
 
-function findPath(start, end) {
-    let queue = [start]
-    let visited = {}
+function findPath(start, end, gr) {
+    const grid = JSON.parse(JSON.stringify(gr))
+    const queue = [start]
+    const visited = {}
     visited[`${start.x},${start.y}`] = true
-    let i = 0
     let crt = start
-    while (queue.length > 0 &&  i++ < 500000) {
+    while (queue.length > 0) {
         crt = queue.shift()
-        if (crt.x === end.x && crt.y === end.y) {
-            break
-        }
+        if (crt.x === end.x && crt.y === end.y) break
         const neighbours = getNeighbours(crt)
         neighbours.forEach(n => {
             let v = visited[`${n.x},${n.y}`]
@@ -37,7 +30,11 @@ function findPath(start, end) {
         })
     }
 
-    let path = []
+    // Not found
+    if (!(crt.x === end.x && crt.y === end.y)) return []
+
+    // Unroll
+    const path = []
     while (!(crt.x === start.x && crt.y === start.y)) {
         path.push(crt.parent)
         crt = crt.parent
@@ -45,7 +42,6 @@ function findPath(start, end) {
     path.reverse()
     return path
 }
-
 
 function getNeighbours(n) {
     const neighbours = []
@@ -56,30 +52,27 @@ function getNeighbours(n) {
     return neighbours
 }
 
-
 function createGrid() {
+    const grid = {}
     let start = { x: 0, y: 0 }
     let end = { x: 0, y: 0 }
+    const a = []
     for (let y = 0; y < lines.length; y++) {
         const line = lines[y];
-        let row = ''
         for (let x = 0; x < line.length; x++) {
             const c = line[x]
-            const ccode = c.charCodeAt(0)
-            if (ccode > 65) {
-                grid[`${x},${y}`] = c
-                row += grid[`${x},${y}`] + ' '
-                if (c === 'S') {
-                    start = { x, y }
-                    grid[`${x},${y}`] = 'ö'
-                }
-                if (c === 'E') {
-                    end = { x, y }
-                    grid[`${x},${y}`] = String.fromCharCode('z'.charCodeAt(0) + 1)
-                }
+            grid[`${x},${y}`] = c
+            if (c === 'S') {
+                start = { x, y }
+                a.push(start)
+                grid[`${x},${y}`] = String.fromCharCode('z'.charCodeAt(0) + 1)
+            } else if (c === 'E') {
+                end = { x, y }
+                grid[`${x},${y}`] = String.fromCharCode('z'.charCodeAt(0) + 1)
+            } else if (c === 'a') {
+                a.push({ x, y })
             }
         }
-        //  console.log(row)
     }
-    return [start, end]
+    return [start, end, grid, a]
 }
