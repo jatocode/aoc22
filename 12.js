@@ -8,7 +8,14 @@ const grid = {}
 
 const [S, E] = createGrid()
 console.log('Start:', S, 'End:', E)
-const path = findPath(S, E)
+let path = findPath(S, E)
+console.log('Dag 12 del 1:', path.length)
+console.log(path.reduce((acc, p) => {
+    const c = grid[`${p.x},${p.y}`]
+    return acc + c + ' '
+}, ''))
+
+path = findPath2(S, E)
 console.log('Dag 12 del 1:', path.length)
 console.log(path.reduce((acc, p) => {
     const c = grid[`${p.x},${p.y}`]
@@ -58,35 +65,20 @@ function findPath2(start, end) {
     front.enqueue(crt, 0)
     while (front.size() > 0) {
         crt = front.dequeue()
-        //console.log('Current:', crt, 'end:', end)
         if (crt.x === end.x && crt.y === end.y) {
-            console.log('Reached end', crt)
             break
         }
 
         const neighbours = getNeighbours(crt)
-        if (grid[`${crt.x},${crt.y}`] === 'z') {
-            console.log('Current', crt, String.fromCharCode(grid[`${crt.x},${crt.y}`]))
-        }
-
         neighbours.forEach(n => {
-            if (grid[`${crt.x},${crt.y}`] === 'z') {
-                console.log('Neighbour:', n, 'cost:', cost[`${n.x},${n.y}`], 'grid:', grid[`${n.x},${n.y}`])
-            }
             // Ok, bara ett steg högre
             if (!n.visited && grid[`${n.x},${n.y}`].charCodeAt(0) - grid[`${crt.x},${crt.y}`].charCodeAt(0) < 2) {
                 const oldcost = cost[`${crt.x},${crt.y}`] || grid[`${crt.x},${crt.y}`].charCodeAt(0)
                 const newcost = oldcost + grid[`${n.x},${n.y}`].charCodeAt(0)
-                if (grid[`${crt.x},${crt.y}`] === 'z') {
-                    console.log(newcost, cost[`${n.x},${n.y}`])
-                }
+
                 if (cost[`${n.x},${n.y}`] === undefined || newcost < cost[`${n.x},${n.y}`]) {
                     cost[`${n.x},${n.y}`] = newcost
                     const priority = newcost
-                    if (grid[`${crt.x},${crt.y}`] === 'z') {
-                        console.log('enq', newcost)
-                        front.debug()
-                    }
                     front.enqueue(n, priority)
                     n.visited = true
                     camefrom[`${n.x},${n.y}`] = crt
