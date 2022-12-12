@@ -3,6 +3,7 @@ const args = process.argv.slice(2)
 
 const lines = osfs.readFileSync(args[0], 'utf8').split('\n')
 
+node = (n) => `${n.x},${n.y}` // Liten helper för att göra det snyggare
 const [S, E, grid, alist] = createGrid()
 const path = findPath(S, E, grid)
 console.log('Dag 12 del 1:', path.length)
@@ -13,35 +14,36 @@ console.log('Dag 12 del 2:', apaths[0])
 function findPath(start, end, gr) {
     const grid = JSON.parse(JSON.stringify(gr))
     const queue = [start]
-    const visited = {}
-    visited[`${start.x},${start.y}`] = true
-    let crt = start
+    const camefrom = {}
+    camefrom[node(start)] = null
+
     while (queue.length > 0) {
-        crt = queue.shift()
+        const crt = queue.shift()
         if (crt.x === end.x && crt.y === end.y) break
-        const neighbours = getNeighbours(crt)
-        neighbours.forEach(n => {
-            let v = visited[`${n.x},${n.y}`]
-            if (!v && grid[`${n.x},${n.y}`].charCodeAt(0) - grid[`${crt.x},${crt.y}`].charCodeAt(0) < 2) {
+
+        getNeighbours(crt).forEach(n => {
+            const v = camefrom[node(n)]
+            if (!v && grid[node(n)]?.charCodeAt(0) - grid[node(crt)]?.charCodeAt(0) < 2) {
                 queue.push(n)
-                visited[`${n.x},${n.y}`] = true
-                n.parent = crt
+                camefrom[node(n)] = crt
             }
         })
     }
 
-    // Not found
-    if (!(crt.x === end.x && crt.y === end.y)) return []
+    // Vi tog oss aldrig fram till slutet
+    if (!camefrom[node(end)]) return []
 
     // Unroll
     const path = []
+    let crt = end
     while (!(crt.x === start.x && crt.y === start.y)) {
-        path.push(crt.parent)
-        crt = crt.parent
+        path.push(camefrom[node(crt)])
+        crt = camefrom[node(crt)]
     }
     path.reverse()
     return path
 }
+
 
 function getNeighbours(n) {
     const neighbours = []
