@@ -7,6 +7,10 @@ class PriorityQueue {
         return this.values.length;
     }
 
+    debug() {
+        console.log(this.values)
+    }
+
     enqueue(value, priority) {
         let newNode = new Node(value, priority);
         this.values.push(newNode);
