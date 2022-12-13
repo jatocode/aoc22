@@ -14,36 +14,43 @@ for (let i = 0; i < lines.length; i += 3, pair++) {
     const res = cmp(pl1, pl2)
     console.log(`Pair ${pair} are ${res ? 'in' : '\x1b[31mNOT\x1b[0m in'} the right order`)
 
+    if(pair == 121) {console.log(line1); console.log(line2) }
     if (res) rightorderpairs.push(pair)
 }
 console.log('Dag 13, del 1:', rightorderpairs.reduce((a, b) => a + b, 0))
 
 function cmp(a, b) {
-    //console.log(a,'<->', b)
-    let rightorder = false
-
     const la = Array.isArray(a) ? a : [a]
     const ra = Array.isArray(b) ? b : [b]
 
-    for (let j = 0; j < Math.max(la.length, ra.length) && !rightorder; j++) {
+    for (let j = 0; j < Math.max(la.length, ra.length); j++) {
         const left = la[j];
         const right = ra[j];
-        // console.log('Comparing', left, right)
+
+        console.log('Comparing', left, ' and ', right)
         if(Array.isArray(left) || Array.isArray(right)) {
-            rightorder = cmp(left, right)   
+            if(left && right === undefined) {
+                return false
+            } else if(left === undefined && right) {
+                return true
+            }
+
+            if(left.length === 0 && right.length === 0) {
+                console.log('Both empty - här borde jag fortsätta jämföra tror jag...orkar inte')
+                return true
+            }
+        
+            return cmp(left, right)   
         }
-        if(rightorder) break
 
         if (left < right || left === undefined) {
-          //  console.log('Left side smaller', left, right)
-            rightorder = true
-            break
+            console.log('Left side smaller', left, right)
+            return true
         } else if (left > right || right === undefined) {
-          //  console.log('Right side smaller', left, right)
-            rightorder = false
-            break
+            console.log('Right side smaller', left, right)
+            return false
         }
     }
 
-    return rightorder
+    return true
 }
