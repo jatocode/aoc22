@@ -81,11 +81,11 @@ function draw() {
 }
 
 function getpoint(x, y) {
-    return grid[`${x},${y}`]
+    return grid[[x,y]]
 }
 
 function point(x, y, value) {
-    grid[`${x},${y}`] = value
+    grid[[x,y]] = value
 }
 
 function drawBottom(y) {
@@ -98,7 +98,7 @@ function print() {
     for (let y = 0; y < maxY + 3; y++) {
         let line = ''
         for (let x = minX-20; x < maxX + 20; x++) {
-            line += grid[`${x},${y}`] || '.'
+            line += grid[[x,y]] || '.'
         }
         console.log(line)
     }
