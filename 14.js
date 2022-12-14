@@ -2,7 +2,7 @@ const osfs = require('fs')
 const args = process.argv.slice(2)
 
 const lines = osfs.readFileSync(args[0], 'utf8').split('\n')
-const grid = {}
+let grid = {}
 let maxX = 0
 let minX = Infinity
 let maxY = 0
@@ -10,29 +10,53 @@ let minY = Infinity
 
 point(500, 0, '+')
 draw()
-console.log(minX, maxX, minY, maxY)
 
 let units = 0
-while (dropsand(500, 0) === true) units++;
+while (dropsand(500, 0) === true)  units++;
 
 print()
 console.log('Del 1: ', units)
 
-function dropsand(x, y) {
-    if (x < 0 || y > maxY) return false
-    //console.log(x, y)
+// Del 2 
+grid = {}
+point(500, 0, '+')
+draw()
+drawBottom(maxY + 2) // Behövs bara för utskriften..
+units = 0
+while (dropsand(500, 0, false) === true)  units++;
+print()
+console.log('Del 2: ', units + 1)
+
+
+function dropsand(x, y, part1=true) {
+    if (part1 && (x < 0 || y > maxY)) return false   
+
+    if(!part1 && y === maxY + 1) {
+        if(getpoint(x, y) != '#') {
+            point(x, y, 'o')
+        }
+        return true
+    }
+
     if (getpoint(x, y + 1) === undefined) {
-        return dropsand(x, y + 1)
+        return dropsand(x, y + 1, part1)
     } else if (getpoint(x - 1, y + 1) === undefined) {
-        return dropsand(x - 1, y + 1)
+        return dropsand(x - 1, y + 1, part1)
     } else if (getpoint(x + 1, y + 1) === undefined) {
-        return dropsand(x + 1, y + 1)
+        return dropsand(x + 1, y + 1, part1)
+    }
+    
+    if(x === 500 && y === 0)  {
+        point(x, y, 'o')
+        console.log('Found the source')
+        return false
     }
 
     point(x, y, 'o')
     return true
-
 }
+
+
 
 function draw() {
     for (let i = 0; i < lines.length; i++) {
@@ -76,10 +100,16 @@ function point(x, y, value) {
     grid[`${x},${y}`] = value
 }
 
+function drawBottom(y) {
+    for (let x = minX-50; x < maxX + 51; x++) {
+        point(x, y, '#')
+    }
+}
+
 function print() {
-    for (let y = 0; y < maxY + 1; y++) {
+    for (let y = 0; y < maxY + 3; y++) {
         let line = ''
-        for (let x = minX; x < maxX + 1; x++) {
+        for (let x = minX-20; x < maxX + 20; x++) {
             line += grid[`${x},${y}`] || '.'
         }
         console.log(line)
