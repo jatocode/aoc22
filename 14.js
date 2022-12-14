@@ -10,7 +10,6 @@ let minY = Infinity
 
 point(500, 0, '+')
 draw()
-
 let units = 0
 while (dropsand(500, 0) === true)  units++;
 
@@ -19,44 +18,33 @@ console.log('Del 1: ', units)
 
 // Del 2 
 grid = {}
-point(500, 0, '+')
 draw()
 drawBottom(maxY + 2) // Behövs bara för utskriften..
 units = 0
 while (dropsand(500, 0, false) === true)  units++;
-print()
 console.log('Del 2: ', units + 1)
-
 
 function dropsand(x, y, part1=true) {
     if (part1 && (x < 0 || y > maxY)) return false   
 
     if(!part1 && y === maxY + 1) {
-        if(getpoint(x, y) != '#') {
-            point(x, y, 'o')
-        }
+        if(getpoint(x, y) != '#') point(x, y, 'o')
         return true
     }
 
-    if (getpoint(x, y + 1) === undefined) {
-        return dropsand(x, y + 1, part1)
-    } else if (getpoint(x - 1, y + 1) === undefined) {
-        return dropsand(x - 1, y + 1, part1)
-    } else if (getpoint(x + 1, y + 1) === undefined) {
-        return dropsand(x + 1, y + 1, part1)
-    }
+    if (!getpoint(x, y + 1))          return dropsand(x,     y + 1, part1)
+    else if (!getpoint(x - 1, y + 1)) return dropsand(x - 1, y + 1, part1)
+    else if (!getpoint(x + 1, y + 1)) return dropsand(x + 1, y + 1, part1)
     
     if(x === 500 && y === 0)  {
         point(x, y, 'o')
-        console.log('Found the source')
+        console.log('Startpunkten igen!')
         return false
     }
 
     point(x, y, 'o')
     return true
 }
-
-
 
 function draw() {
     for (let i = 0; i < lines.length; i++) {
