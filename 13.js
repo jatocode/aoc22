@@ -12,11 +12,26 @@ for (let i = 0; i < lines.length; i += 3, pair++) {
     const pl1 = JSON.parse(line1)
     const pl2 = JSON.parse(line2)
     const res = cmp(pl1, pl2)
-    console.log(`Pair ${pair} are ${res === 1 ? 'in' : '\x1b[31mNOT\x1b[0m in'} the right order\n`)
+    console.log(`Pair ${pair} are ${res === 1 ? 'in' : '\x1b[31mNOT\x1b[0m in'} the right order`)
 
     if (res === 1) rightorderpairs.push(pair)
 }
 console.log('Dag 13, del 1:', rightorderpairs.reduce((a, b) => a + b, 0))
+
+const allpackets = lines.filter(x => x.length > 1).map(l => { 
+    return {l:l.trim(), parsed: JSON.parse(l.trim())}
+})
+const packet1 = '[[2]]'
+const packet2 = '[[6]]'
+allpackets.push({l: packet1, parsed: JSON.parse(packet1)})
+allpackets.push({l: packet2, parsed: JSON.parse(packet2)})
+
+const sorted = allpackets.sort((a, b) => cmp(b.parsed, a.parsed))
+
+const packet1i = sorted.findIndex(x => x.l === packet1) + 1
+const packet2i = sorted.findIndex(x => x.l === packet2) + 1
+
+console.log('Dag 13, del 2:', packet1i * packet2i)
 
 function cmp(a, b) {
     const la = Array.isArray(a) ? a : [a]
@@ -26,36 +41,27 @@ function cmp(a, b) {
     for (let j = 0; j < Math.max(la.length, ra.length) && cmpvalue === 0; j++) {
         const left = la[j];
         const right = ra[j];
-
-        console.log('Comparing', left, ' and ', right)
-
-        // One of the values are an arrays
+        // One of the values are an array
         if (Array.isArray(left) || Array.isArray(right)) {
             cmpvalue = cmp(left, right)
         } else {
             if (left === undefined && right) {
-                console.log('Left is undefined.', left, right)
                 cmpvalue = 1
                 break
             } else if (left && right === undefined) {
-                console.log('Right is undefined.', left, right)
                 cmpvalue = -1
                 break
             } else if (left === undefined && right === undefined) {
-                console.log('Both are undefined.', left, right)
                 cmpvalue = 0
             } else if (left < right) {
-                console.log('Left is smaller. Right order', left, right)
                 // Right order
                 cmpvalue = 1
                 break
             } else if (left > right) {
-                console.log('Right side is smaller. NOT in order', left, right)
                 // Wrong order
                 cmpvalue = -1
             } else if (left === right) {
                 // Equal, continue
-                console.log('Equal, continue', left, right)
                 cmpvalue = 0
             }
         }
