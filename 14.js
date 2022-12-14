@@ -21,28 +21,25 @@ grid = {}
 draw()
 drawBottom(maxY + 2) // Behövs bara för utskriften..
 units = 0
-while (dropsand(500, 0, false) === true)  units++;
+while (dropsand(500, 0, true) === true)  units++;
 console.log('Del 2: ', units + 1)
 
-function dropsand(x, y, part1=true) {
-    if (part1 && (x < 0 || y > maxY)) return false   
-
-    if(!part1 && y === maxY + 1) {
+function dropsand(x, y, fill=false) {
+    if(!fill && (x < 0 || y > maxY)) return false
+    
+    if(fill && y === maxY + 1) {
         if(getpoint(x, y) != '#') point(x, y, 'o')
         return true
     }
 
-    if (!getpoint(x, y + 1))          return dropsand(x,     y + 1, part1)
-    else if (!getpoint(x - 1, y + 1)) return dropsand(x - 1, y + 1, part1)
-    else if (!getpoint(x + 1, y + 1)) return dropsand(x + 1, y + 1, part1)
+    if (!getpoint(x, y + 1))          return dropsand(x,     y + 1, fill)
+    else if (!getpoint(x - 1, y + 1)) return dropsand(x - 1, y + 1, fill)
+    else if (!getpoint(x + 1, y + 1)) return dropsand(x + 1, y + 1, fill)
     
-    if(x === 500 && y === 0)  {
-        point(x, y, 'o')
-        console.log('Startpunkten igen!')
-        return false
-    }
-
     point(x, y, 'o')
+
+    if(x === 500 && y === 0) return false
+
     return true
 }
 
