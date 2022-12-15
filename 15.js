@@ -5,18 +5,18 @@ const lines = osfs.readFileSync(args[0], 'utf8').split('\n')
 
 const grid = {}
 const checkrow = 2000000
-plot(checkrow)
+const r = plot(checkrow)
 //print()
-
 // Y-koordinat  som inte har en beacon
-console.log('Done plotting, checking row:', checkrow)
-const keysNoBeacon = Object.keys(grid).filter(x => {
-    y = parseInt(x.split(',')[1])
-    return y === checkrow && grid[x] !== 'B'
-})
-console.log('Dag 15, del 1:', keysNoBeacon.length)
+// console.log('Done plotting, checking row:', checkrow)
+// const keysNoBeacon = Object.keys(grid).filter(x => {
+//     const y = parseInt(x.split(',')[1])
+//     return y === checkrow && grid[x] !== 'B'
+// })
+console.log('Dag 15, del 1:', r)
 
 function plot(checkrow) {
+    let count = 0
     lines.forEach(line => {
         const m = line.match(/Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)/)
         const sx = parseInt(m[1])
@@ -32,10 +32,14 @@ function plot(checkrow) {
             if (x == bx && y == by) grid[[x, y]] = 'B'
             if (Math.abs(x - sx) + Math.abs(y - sy) < dist) {
 //                if (x == sx && y == sy) grid[[x, y]] = 'S'
-                if (grid[[x, y]] === undefined) grid[[x, y]] = '#'
+                if (grid[[x, y]] === undefined) {
+                    grid[[x, y]] = '#'
+                    count++
+                }
             }
         }
     })
+    return count
 }
 
 function print() {
