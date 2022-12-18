@@ -24,25 +24,19 @@ keys.forEach(key => {
     })
 })
 
-const sides = keys.reduce((acc, key) => acc + grid[key].neighbors, 0)
-console.log(sides, keys.length * 6)
+const covered = keys.reduce((acc, key) => acc + grid[key].neighbors, 0)
+const total = keys.length * 6
+//console.log(grid, covered, total)
+console.log(grid, covered, total, 'Del 1: ', total-covered)
 
 function neighbours(x, y, z) {
     const neighbors = []
-    // for (let i = -1; i <= 1; i++) {
-    //     for (let j = -1; j <= 1; j++) {
-    //         for (let k = -1; k <= 1; k++) {
-    //             if (i === 0 && j === 0 && k === 0) continue
-    //             neighbors.push([x + i, y + j, z + k])
-    //         }
-    //     }
-    // }
     neighbors.push([x + 1, y, z])
     neighbors.push([x - 1, y, z])
     neighbors.push([x, y + 1, z])
     neighbors.push([x, y - 1, z])
     neighbors.push([x, y, z + 1])
     neighbors.push([x, y, z - 1])
-    
+
     return neighbors
 }
